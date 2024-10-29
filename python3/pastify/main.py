@@ -26,7 +26,7 @@ class Pastify(object):
             # image should be created in the same directory as the current file_path
             file_path = path.dirname(vim.exec_lua('return vim.fn.expand("%:p")'))
         else:
-            file_path = path.normpath(vim.exec_lua("return vim.fn.getcwd()"))
+            file_path = path.normpath(vim.exec_lua("return vim.fn.getenv(\"HOME\")"))
         # Sanitize the path to guarantee absolute path and return
         return path.abspath(file_path)
 
