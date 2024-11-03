@@ -58,32 +58,30 @@ class Pastify(object):
 
         file_name = "" # just setting this as an empty string instead
 
-        if options["save"] in ["local", "local_file"]:
-            timestamp = int(time.time())
-            file_name = f"image_{timestamp}"
+        timestamp = int(time.time())
+        file_name = f"image_{timestamp}"
 
-            if path.exists(
-                path.join(local_path, self.get_image_path_name(), f"{file_name}.png")
-            ):
-                self.logger("File already exists.", "WARN")
-                return
+        if path.exists(
+            path.join(local_path, self.get_image_path_name(), f"{file_name}.png")
+        ):
+            self.logger("File already exists.", "WARN")
+            return
 
         img_bytes = BytesIO()
         img.save(img_bytes, format="PNG")
         placeholder_text = ""
-        if self.config["opts"]["save"] in ["local", "local_file"]:
-            assets_path = path.abspath(
-                path.join(local_path, self.get_image_path_name())
-            )
+        assets_path = path.abspath(
+            path.join(local_path, self.get_image_path_name())
+        )
 
-            abs_img_path = path.join(assets_path, f"{file_name}.png")
+        abs_img_path = path.join(assets_path, f"{file_name}.png")
 
-            if not path.exists(assets_path):
-                makedirs(assets_path)
+        if not path.exists(assets_path):
+            makedirs(assets_path)
 
-            placeholder_text = path.join(assets_path, f"{file_name}.png")
-            self.logger("Full path {}".format(placeholder_text), "INFO")
-            img.save(abs_img_path, "PNG")
+        placeholder_text = path.join(assets_path, f"{file_name}.png")
+        self.logger("Full path {}".format(placeholder_text), "INFO")
+        img.save(abs_img_path, "PNG")
 
         if filetype not in self.config["ft"]:
             filetype = self.config["opts"]["default_ft"]
