@@ -1,16 +1,7 @@
 # pastify.nvim
 
-<div align="center">
-  <p><strong>Paste screenshots directly into files asynchronously</strong></p>
-</div>
-
-Local Saving               |  Online Hosting
-:-------------------------:|:-------------------------:
-![](./static/gifs/local.gif)  |  ![](./static/gifs/online.gif)
-
-To use this plugin, use `:Pastify` command, which will take the clipboard content and paste it before the cursor. Using the `:PastifyAfter` command will paste the text after the cursor.
-
-If an image is stored in the system clipboard then Pastify will save the image to a local directory (specified by the configuration) and insert the path as text into the buffer. The specific text that is inserted can be customized for different filetype (see the configuration section below). If an image is stored in the system clipboard and an API key is provided, Pastify will upload the image to the specified online service and insert the URL into the buffer. If the clipboard contains text, then the text will be pasted into the buffer.
+A fork of ["gmohlamo/pastify.nvim"](https://github.com/gmohlamo/pastify.nvim), but I just made minor changes for use with VimWiki.
+The main difference is that I removed the upload functionality and made all paste efforts create a time stamped image relative to the note that you are pasting it into.
 
 ## Requirements
 
@@ -19,8 +10,6 @@ If an image is stored in the system clipboard then Pastify will save the image t
 - Linux (with `xclip` or `wl-paste` installed)
 - Python3
 - Pip3
-- For saving images online
-  - [Imgbb](https://api.imgbb.com/) api key (free)
 
 ## Installation
 
@@ -29,7 +18,7 @@ Then, run `pip3 install pillow`.
 
 ```lua
 return {
-  'TobinPalmer/pastify.nvim',
+  'gmohlamo/pastify.nvim',
   cmd = { 'Pastify', 'PastifyAfter' },
   config = function()
     require('pastify').setup {
@@ -59,26 +48,8 @@ require('pastify').setup {
     default_ft = 'markdown', -- Default filetype to use
   },
   ft = { -- Custom snippets for different filetypes, will replace $IMG$ with the image url
-    html = '<img src="$IMG$" alt="">',
+    vimwiki = '{{file:$IMG$}}',
     markdown = '![]($IMG$)',
-    tex = [[\includegraphics[width=\linewidth]{$IMG$}]],
-    css = 'background-image: url("$IMG$");',
-    js = 'const img = new Image(); img.src = "$IMG$";',
-    xml = '<image src="$IMG$" />',
-    php = '<?php echo "<img src=\"$IMG$\" alt=\"\">"; ?>',
-    python = '# $IMG$',
-    java = '// $IMG$',
-    c = '// $IMG$',
-    cpp = '// $IMG$',
-    swift = '// $IMG$',
-    kotlin = '// $IMG$',
-    go = '// $IMG$',
-    typescript = '// $IMG$',
-    ruby = '# $IMG$',
-    vhdl = '-- $IMG$',
-    verilog = '// $IMG$',
-    systemverilog = '// $IMG$',
-    lua = '-- $IMG$',
   },
 }
 ```
@@ -87,15 +58,11 @@ require('pastify').setup {
 
 **aboslute_path** - If true, the path will be absolute, if false, the path will be relative to either the current file or current working directory (depending on the **save** option).
 
-**apikey** - The api key for the online service, if you want to save online.
+**local_path** - The path to save local files in, relative to the current working directory. This can be a lua function. I'll probably be removing this too...
 
-**local_path** - The path to save local files in, relative to the current working directory. This can be a lua function.
+**save** - Either 'local' or 'online' or 'local_file'. 'local' will save the image locally relative to the current working directory, 'online' will save the image online, 'local_file' will save the image locally relative to the file path. This is also gonna leave...
 
-**save** - Either 'local' or 'online' or 'local_file'. 'local' will save the image locally relative to the current working directory, 'online' will save the image online, 'local_file' will save the image locally relative to the file path.
-
-**filename** - The filename to save the image as, if empty pastify will ask for a name. This can be a lua function.
-
-**default_ft** - The default filetype to use if the filetype is not in the **ft** table.
+**default_ft** - The default filetype to use if the filetype is not in the **ft** table. I'll be removing this in an effort to clean up the codebase.
 
 #### File Types
 
@@ -115,7 +82,7 @@ Or if you prefer to do everything in lazy.nvim, here is my config:
 
 ```lua
 return {
-    'TobinPalmer/pastify.nvim',
+    'gmohlamo/pastify.nvim',
     cmd = { 'Pastify', 'PastifyAfter' },
     event = { 'BufReadPost' }, -- Load after the buffer is read, I like to be able to paste right away
     keys = {
@@ -129,45 +96,14 @@ return {
                 absolute_path = false, -- use absolute or relative path to the working directory
                 apikey = '', -- Api key, required for online saving
                 local_path = '/assets/imgs/', -- The path to put local files in, ex ~/Projects/<name>/assets/images/<imgname>.png
-                save = 'local', -- Either 'local' or 'online' or 'local_file'
-                filename = function() return vim.fn.expand("%:t:r") .. '_' .. os.date('%Y-%m-%d_%H-%M-%S') end,
+                save = 'local', -- To be deprecated
                 default_ft = 'markdown', -- Default filetype to use
             },
             ft = { -- Custom snippets for different filetypes, will replace $IMG$ with the image url
-                html = '<img src="$IMG$" alt="">',
+                vimwiki = '{{file:$IMG$}}',
                 markdown = '![]($IMG$)',
-                tex = [[\includegraphics[width=\linewidth]{$IMG$}]],
-                css = 'background-image: url("$IMG$");',
-                js = 'const img = new Image(); img.src = "$IMG$";',
-                xml = '<image src="$IMG$" />',
-                php = '<?php echo "<img src=\"$IMG$\" alt=\"\">"; ?>',
-                python = '# $IMG$',
-                java = '// $IMG$',
-                c = '// $IMG$',
-                cpp = '// $IMG$',
-                swift = '// $IMG$',
-                kotlin = '// $IMG$',
-                go = '// $IMG$',
-                typescript = '// $IMG$',
-                ruby = '# $IMG$',
-                vhdl = '-- $IMG$',
-                verilog = '// $IMG$',
-                systemverilog = '// $IMG$',
-                lua = '-- $IMG$',
             },
         })
     end
 }
 ```
-
-## Comparison and similar plugins
-
-| Feature                      | [pastify.nvim](https://github.com/TobinPalmer/pastify.nvim) | [img-paste.vim](https://github.com/img-paste-devs/img-paste.vim) | [clipboard-image.nvim](https://github.com/ekickx/clipboard-image.nvim) |
-|------------------------------|-------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------------|
-| Async                        | ✅                                                          |                                                                  |                                                                        |
-| Local                        | ✅                                                          | ✅                                                               | ✅                                                                     |
-| Online                       | ✅                                                          |                                                                  |                                                                        |
-| Highly Customizable          | ✅                                                          |                                                                  | ✅                                                                     |
-| Custom Snippets For Filetype | ✅                                                          | ✅                                                               | ✅                                                                     |
-| Python or Lua or Vimscript   | Python                                                      | Vimscript                                                        | Lua                                                                    |
-
