@@ -1,6 +1,6 @@
 # pastify.nvim
 
-A fork of ["gmohlamo/pastify.nvim"](https://github.com/gmohlamo/pastify.nvim), but I just made minor changes for use with VimWiki.
+A fork of ["TobinPalmer/pastify.nvim"](https://github.com/TobinPalmer/pastify.nvim), but I just made minor changes for use with VimWiki.
 The main difference is that I removed the upload functionality and made all paste efforts create a time stamped image relative to the note that you are pasting it into.
 
 ## Requirements
