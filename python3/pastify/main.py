@@ -24,7 +24,7 @@ class Pastify(object):
         file_path = path.normpath(vim.exec_lua('return require("pastify").getFilePath()'))
         return path.abspath(file_path)
 
-    def get_image_path_name(self, relative: bool = True):
+    def get_image_path_name(self, relative: bool = False):
         image_path_name: str = vim.exec_lua(
             'return require("pastify").createImagePathName()'
         )
