@@ -21,6 +21,7 @@ M.config = {
 	ft = {
 		markdown = '![]($IMG$)',
 		vimwiki = '{{file:$IMG$}}',
+		typst = '#figure(image("$IMG$"))'
 	},
 }
 
