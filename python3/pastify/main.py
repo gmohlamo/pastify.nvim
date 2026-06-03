@@ -70,18 +70,18 @@ class Pastify(object):
         img_bytes = BytesIO()
         img.save(img_bytes, format="PNG")
         placeholder_text = ""
-        assets_path = path.abspath(
+        assets_path = path.relpath(
             path.join(local_path, self.get_image_path_name())
         )
 
-        abs_img_path = path.join(assets_path, f"{file_name}.png")
+        img_path = path.join(assets_path, f"{file_name}.png")
 
         if not path.exists(assets_path):
             makedirs(assets_path)
 
         placeholder_text = path.join(assets_path, f"{file_name}.png")
         self.logger("Full path {}".format(placeholder_text), "INFO")
-        img.save(abs_img_path, "PNG")
+        img.save(img_path, "PNG")
 
         if filetype not in self.config["ft"]:
             filetype = self.config["opts"]["default_ft"]
