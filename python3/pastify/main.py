@@ -80,8 +80,7 @@ class Pastify(object):
             makedirs(assets_path)
 
         placeholder_text = path.join(assets_path, f"{file_name}.png")
-        self.logger("Full path {}".format(placeholder_text), "INFO")
-        self.logger("get_image_path_name output {}".format(self.get_image_path_name()), "INFO")
+        #self.logger("Full path {}".format(placeholder_text), "INFO")
         img.save(img_path, "PNG")
 
         if filetype not in self.config["ft"]:
